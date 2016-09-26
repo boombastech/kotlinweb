@@ -9,16 +9,26 @@ import uk.co.boombastech.kotlinweb.http.config.Config
 class Listener(private val config: Config) : GuiceServletContextListener() {
 
     override fun getInjector(): Injector {
-        val module = config.getProperty(Config.server.modules)
+        val modules = config.getProperty(Config.server.modules)
 
-        val clazz = Class.forName(module)
-        val newInstance = clazz.getConstructor().newInstance()
+        val moduleList: MutableList<AbstractModule> = mutableListOf(ConfigModule(config))
 
-        if (newInstance is AbstractModule) {
-            return Guice.createInjector(ConfigModule(config), newInstance)
-        } else {
-            throw Exception("module supplied isn't a module")
+        for (module in modules.split(",")) {
+            if (module.isNotBlank()) {
+                val clazz = Class.forName(module)
+                val newInstance = clazz.getConstructor().newInstance()
+
+                if (newInstance is AbstractModule) {
+                    moduleList.add(newInstance)
+                } else {
+                    throw Exception("module supplied isn't a module")
+                }
+            } else {
+                throw Exception("module supplied isn't a module")
+            }
         }
+
+        return Guice.createInjector(moduleList)
     }
 }
 

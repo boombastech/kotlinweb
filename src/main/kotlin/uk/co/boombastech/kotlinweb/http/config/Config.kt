@@ -8,15 +8,17 @@ class Config {
     object server : PropertyGroup() {
         val port by intType
         val modules by stringType
+        val host by stringType
     }
 
-    private val configuration : Configuration
+    private val configuration: Configuration
 
     init {
         configuration = EnvironmentVariables() overriding
                 ConfigurationProperties.fromResource("kotlinweb.properties")
     }
-    fun <T> getProperty(key: Key<T>) : T {
+
+    fun <T> getProperty(key: Key<T>): T {
         return configuration[key]
     }
 }
