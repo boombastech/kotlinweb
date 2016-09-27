@@ -7,6 +7,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler
 import uk.co.boombastech.kotlinweb.http.config.Config
 import uk.co.boombastech.kotlinweb.http.controllers.Controller
 import uk.co.boombastech.kotlinweb.http.requests.HttpMethod.GET
+import uk.co.boombastech.kotlinweb.http.requests.KotlinWebCookie.userId
 import uk.co.boombastech.kotlinweb.http.requests.Request
 import uk.co.boombastech.kotlinweb.http.routing.Route
 import uk.co.boombastech.kotlinweb.http.routing.Routes
@@ -33,7 +34,10 @@ fun main(args: Array<String>) {
 class WebModuleTest : WebModule() {
     override fun getRoutes(): Routes {
         return Routes(
-                Route("/", GET, HomepageController::class)
+                Route("/", GET, CookieViewerController::class),
+                Route("/cookie", GET, CookieViewerController::class),
+                Route("/cookie/set", GET, CookieSetterController::class),
+                Route("/cookie/delete", GET, CookieDeleteController::class)
         )
     }
 
@@ -42,9 +46,24 @@ class WebModuleTest : WebModule() {
     }
 }
 
-class HomepageController : Controller {
+class CookieViewerController : Controller {
     override fun execute(request: Request): Response {
-        return DataResponse("homepage")
+        var value: String = "default value"
+        val get = request.cookies.get(userId)?.let { value = it.value }
+        return DataResponse(value)
     }
+}
 
+class CookieSetterController : Controller {
+    override fun execute(request: Request): Response {
+        request.cookies.put(userId, "helloworld")
+        return DataResponse("value set")
+    }
+}
+
+class CookieDeleteController : Controller {
+    override fun execute(request: Request): Response {
+        request.cookies.get(userId)?.delete()
+        return DataResponse("value deleted")
+    }
 }

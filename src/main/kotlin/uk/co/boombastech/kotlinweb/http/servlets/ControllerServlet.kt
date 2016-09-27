@@ -12,17 +12,18 @@ import javax.servlet.http.HttpServletResponse
 @Singleton
 class ControllerServlet @Inject constructor(private val routeFactory: RouteFactory, private val requestFactory: RequestFactory) : HttpServlet() {
 
-    override fun service(req: HttpServletRequest, resp: HttpServletResponse) {
-        // find correct controller
-        val request = requestFactory.get(req)
+    override fun service(servletRequest: HttpServletRequest, servletResponse: HttpServletResponse) {
+        val request = requestFactory.get(servletRequest)
         val controller = routeFactory.find(request)
 
-        // call correct controller
         val response = controller.execute(request)
 
-        // return result
+        request.cookies.updated().forEach({ cookie ->
+            servletResponse.addCookie(cookie.toServletCookie())
+        })
+
         when (response) {
-            is DataResponse -> resp.writer.print(response.data)
+            is DataResponse -> servletResponse.writer.print(response.data)
         }
     }
 }

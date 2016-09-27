@@ -5,4 +5,5 @@ interface Request {
     val method: HttpMethod
     val parameters: Parameters
     val headers: Headers
+    val cookies: CookieJar
 }

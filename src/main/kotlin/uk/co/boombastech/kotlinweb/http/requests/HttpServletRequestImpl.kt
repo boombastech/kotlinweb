@@ -3,6 +3,18 @@ package uk.co.boombastech.kotlinweb.http.requests
 import javax.servlet.http.HttpServletRequest
 
 class HttpServletRequestImpl(private val httpServlet: HttpServletRequest) : Request {
+    override val cookies: CookieJar by lazy {
+
+        val mutableListOf = mutableListOf<Cookie>()
+
+        if (httpServlet.cookies != null) {
+            for (cookie in httpServlet.cookies) {
+                mutableListOf.add(Cookie(cookie.name, cookie.value))
+            }
+        }
+
+        CookieJar(mutableListOf)
+    }
 
     override val url: Url by lazy {
         Url(httpServlet.requestURI)
