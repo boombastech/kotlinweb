@@ -2,17 +2,17 @@ package uk.co.boombastech.kotlinweb.http.requests
 
 import javax.servlet.http.HttpServletRequest
 
-class HttpServletRequestImpl(val httpServlet: HttpServletRequest) : Request {
+class HttpServletRequestImpl(private val httpServlet: HttpServletRequest) : Request {
 
-    override fun url(): String {
-        return httpServlet.requestURI
+    override val url: Url by lazy {
+        Url(httpServlet.requestURI)
     }
 
-    override fun method(): HttpMethod {
-        return HttpMethod.valueOf(httpServlet.method)
+    override val method: HttpMethod by lazy {
+        HttpMethod.valueOf(httpServlet.method)
     }
 
-    override fun parameters(): Parameters {
+    override val parameters: Parameters by lazy {
         val parameterMap = mutableMapOf<String, List<String>>()
 
         val parameterNames = httpServlet.parameterNames.toList()
@@ -21,10 +21,10 @@ class HttpServletRequestImpl(val httpServlet: HttpServletRequest) : Request {
             parameterMap.put(name, httpServlet.getParameterValues(name).toList())
         }
 
-        return Parameters(parameterMap)
+        Parameters(parameterMap)
     }
 
-    fun headers(): Headers {
+    override val headers: Headers by lazy {
         val headerMap = mutableMapOf<String, List<String>>()
 
         val headerNames = httpServlet.headerNames.toList()
@@ -33,6 +33,6 @@ class HttpServletRequestImpl(val httpServlet: HttpServletRequest) : Request {
             headerMap.put(name, httpServlet.getHeaders(name).toList())
         }
 
-        return Headers(headerMap)
+        Headers(headerMap)
     }
 }

@@ -1,7 +1,6 @@
 package uk.co.boombastech.kotlinweb.http
 
 import com.google.inject.servlet.ServletModule
-import uk.co.boombastech.kotlinweb.http.config.Config
 import uk.co.boombastech.kotlinweb.http.requests.RequestFactory
 import uk.co.boombastech.kotlinweb.http.routing.RouteFactory
 import uk.co.boombastech.kotlinweb.http.routing.Routes

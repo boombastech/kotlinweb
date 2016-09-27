@@ -1,7 +1,8 @@
 package uk.co.boombastech.kotlinweb.http.requests
 
 interface Request {
-    fun url() : String
-    fun method() : HttpMethod
-    fun parameters(): Parameters
+    val url: Url
+    val method: HttpMethod
+    val parameters: Parameters
+    val headers: Headers
 }

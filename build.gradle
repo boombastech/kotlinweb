@@ -28,6 +28,8 @@ dependencies {
     compile 'com.natpryce:konfig:1.4.1.0'
 
     testCompile 'org.assertj:assertj-core:3.4.1'
-    testCompile 'junit:junit:4.12'
+    testCompile('junit:junit:4.12') {
+        exclude module: 'hamcrest-core'
+    }
     testCompile 'org.mockito:mockito-all:1.9.5'
 }

@@ -1,7 +1,6 @@
 package uk.co.boombastech.kotlinweb.http.servlets
 
 import uk.co.boombastech.kotlinweb.http.DataResponse
-import uk.co.boombastech.kotlinweb.http.requests.HttpMethod
 import uk.co.boombastech.kotlinweb.http.requests.RequestFactory
 import uk.co.boombastech.kotlinweb.http.routing.RouteFactory
 import javax.inject.Inject
@@ -15,13 +14,14 @@ class ControllerServlet @Inject constructor(private val routeFactory: RouteFacto
 
     override fun service(req: HttpServletRequest, resp: HttpServletResponse) {
         // find correct controller
-        val controller = routeFactory.find(req.requestURI, HttpMethod.valueOf(req.method))
+        val request = requestFactory.get(req)
+        val controller = routeFactory.find(request)
 
         // call correct controller
-        val response = controller.execute(requestFactory.get(req))
+        val response = controller.execute(request)
 
         // return result
-        when(response) {
+        when (response) {
             is DataResponse -> resp.writer.print(response.data)
         }
     }
