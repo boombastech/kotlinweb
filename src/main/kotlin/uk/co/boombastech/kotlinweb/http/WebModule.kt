@@ -15,11 +15,14 @@ abstract class WebModule() : ServletModule() {
     private fun bindRoutes() {
         bind(RequestFactory::class.java)
         bind(Routes::class.java).toInstance(getRoutes())
+        bind(GlobalFilters::class.java).toInstance(globalFilters())
         bind(RouteFactory::class.java)
+        bind(GlobalFiltersFactory::class.java)
 
         serve("*").with(ControllerServlet::class.java)
     }
 
     abstract fun getRoutes(): Routes
+    abstract fun globalFilters(): GlobalFilters
     abstract fun wiring()
 }

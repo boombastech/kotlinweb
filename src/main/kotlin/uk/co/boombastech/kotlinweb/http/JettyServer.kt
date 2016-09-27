@@ -6,6 +6,9 @@ import org.eclipse.jetty.servlet.DefaultServlet
 import org.eclipse.jetty.servlet.ServletContextHandler
 import uk.co.boombastech.kotlinweb.http.config.Config
 import uk.co.boombastech.kotlinweb.http.controllers.Controller
+import uk.co.boombastech.kotlinweb.http.filters.PostControllerFilter
+import uk.co.boombastech.kotlinweb.http.filters.PostResponseFilter
+import uk.co.boombastech.kotlinweb.http.filters.PreControllerFilter
 import uk.co.boombastech.kotlinweb.http.requests.HttpMethod.GET
 import uk.co.boombastech.kotlinweb.http.requests.KotlinWebCookie.userId
 import uk.co.boombastech.kotlinweb.http.requests.Request
@@ -32,9 +35,15 @@ fun main(args: Array<String>) {
 }
 
 class WebModuleTest : WebModule() {
+    override fun globalFilters(): GlobalFilters {
+        return GlobalFilters(
+                RequestLoggerFilter::class
+        )
+    }
+
     override fun getRoutes(): Routes {
         return Routes(
-                Route("/", GET, CookieViewerController::class),
+                Route("/", GET, CookieViewerController::class, RequestLoggerFilter::class),
                 Route("/cookie", GET, CookieViewerController::class),
                 Route("/cookie/set", GET, CookieSetterController::class),
                 Route("/cookie/delete", GET, CookieDeleteController::class)
@@ -43,6 +52,20 @@ class WebModuleTest : WebModule() {
 
     override fun wiring() {
 
+    }
+}
+
+class RequestLoggerFilter : PreControllerFilter, PostControllerFilter, PostResponseFilter {
+    override fun postControllerFilter(request: Request) {
+        println("postControllerFilter")
+    }
+
+    override fun postResponseFilter(request: Request) {
+        println("postResponseFilter")
+    }
+
+    override fun preControllerFilter(request: Request) {
+        println("preControllerFilter")
     }
 }
 

@@ -31,4 +31,8 @@ class Url(val url: String) {
     val hash: String by lazy {
         url.substringAfter("#", "")
     }
+
+    override fun toString(): String {
+        return url
+    }
 }
