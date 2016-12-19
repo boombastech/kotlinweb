@@ -6,8 +6,8 @@ class CookieJar(private val cookies: MutableList<Cookie>) {
         return cookies.firstOrNull { cookie -> cookie.name.equals(cookieName.name) && !cookie.deleted }
     }
 
-    fun put(cookieName: CookieName, value: String, maxAge: Int = cookieName.maxAge, path: String = cookieName.path) {
-        cookies.add(Cookie(cookieName.name, value, maxAge, true, path))
+    fun put(cookieName: CookieName, value: String) {
+        cookies.add(Cookie(cookieName.name, value, cookieName.maxAge, cookieName.path, true))
     }
 
     fun updated(): List<Cookie> {

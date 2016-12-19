@@ -2,7 +2,7 @@ package uk.co.boombastech.kotlinweb.http.requests
 
 import javax.servlet.http.Cookie
 
-class Cookie(val name: String, var value: String, var maxAge: Int = -1, var modified: Boolean = false, val path: String = "/") {
+class Cookie(val name: String, var value: String, var maxAge: Int = -1, val path: String = "/", var modified: Boolean = false) {
     var deleted: Boolean = false
 
     fun delete() {

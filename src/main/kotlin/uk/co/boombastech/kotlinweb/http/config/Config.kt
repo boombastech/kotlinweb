@@ -9,6 +9,7 @@ class Config {
         val port by intType
         val modules by stringType
         val host by stringType
+        val contextPath by stringType
     }
 
     private val configuration: Configuration

@@ -4,11 +4,12 @@ import com.google.inject.servlet.GuiceFilter
 import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.servlet.DefaultServlet
 import org.eclipse.jetty.servlet.ServletContextHandler
+import uk.co.boombastech.kotlinweb.http.authentication.AuthenticationFilter
 import uk.co.boombastech.kotlinweb.http.config.Config
+import uk.co.boombastech.kotlinweb.http.config.Config.server.contextPath
+import uk.co.boombastech.kotlinweb.http.config.Config.server.port
 import uk.co.boombastech.kotlinweb.http.controllers.Controller
-import uk.co.boombastech.kotlinweb.http.filters.PostControllerFilter
-import uk.co.boombastech.kotlinweb.http.filters.PostResponseFilter
-import uk.co.boombastech.kotlinweb.http.filters.PreControllerFilter
+import uk.co.boombastech.kotlinweb.http.filters.TimingFilter
 import uk.co.boombastech.kotlinweb.http.requests.HttpMethod.GET
 import uk.co.boombastech.kotlinweb.http.requests.KotlinWebCookie.userId
 import uk.co.boombastech.kotlinweb.http.requests.Request
@@ -19,10 +20,10 @@ import javax.servlet.DispatcherType
 
 fun main(args: Array<String>) {
     val config = Config()
-    val server = Server(config.getProperty(Config.server.port))
+    val server = Server(config.getProperty(port))
 
-    val servletContextHandler = ServletContextHandler(ServletContextHandler.SESSIONS);
-    servletContextHandler.contextPath = "/"
+    val servletContextHandler = ServletContextHandler(ServletContextHandler.SESSIONS)
+    servletContextHandler.contextPath = config.getProperty(contextPath)
     servletContextHandler.addEventListener(Listener(config))
     servletContextHandler.addFilter(GuiceFilter::class.java, "/*", EnumSet.allOf(DispatcherType::class.java))
 
@@ -35,15 +36,15 @@ fun main(args: Array<String>) {
 }
 
 class WebModuleTest : WebModule() {
+
     override fun globalFilters(): GlobalFilters {
-        return GlobalFilters(
-                RequestLoggerFilter::class
-        )
+        return GlobalFilters(TimingFilter::class)
     }
 
     override fun getRoutes(): Routes {
         return Routes(
-                Route("/", GET, CookieViewerController::class, RequestLoggerFilter::class),
+                Route("/", GET, CookieViewerController::class),
+                Route("/secure", GET, CookieViewerController::class, AuthenticationFilter::class),
                 Route("/cookie", GET, CookieViewerController::class),
                 Route("/cookie/set", GET, CookieSetterController::class),
                 Route("/cookie/delete", GET, CookieDeleteController::class)
@@ -51,28 +52,13 @@ class WebModuleTest : WebModule() {
     }
 
     override fun wiring() {
-
-    }
-}
-
-class RequestLoggerFilter : PreControllerFilter, PostControllerFilter, PostResponseFilter {
-    override fun postControllerFilter(request: Request) {
-        println("postControllerFilter")
-    }
-
-    override fun postResponseFilter(request: Request) {
-        println("postResponseFilter")
-    }
-
-    override fun preControllerFilter(request: Request) {
-        println("preControllerFilter")
     }
 }
 
 class CookieViewerController : Controller {
     override fun execute(request: Request): Response {
         var value: String = "default value"
-        val get = request.cookies.get(userId)?.let { value = it.value }
+        request.cookies.get(userId)?.let { value = it.value }
         return DataResponse(value)
     }
 }
