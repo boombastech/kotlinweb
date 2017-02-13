@@ -13,6 +13,7 @@ buildscript {
 }
 
 apply plugin: 'kotlin'
+apply plugin: 'maven-publish'
 
 repositories {
     mavenCentral()
@@ -34,4 +35,22 @@ dependencies {
         exclude module: 'hamcrest-core'
     }
     testCompile 'org.mockito:mockito-all:1.9.5'
+}
+
+publishing {
+//    repositories {
+//        maven {
+//            credentials {
+//                username 'deployment'
+//                password 'deployment123'
+//            }
+//            url "http://devnexus001.dev.dc1.tradermedia.net:8081/nexus/content/repositories/snapshots"
+//        }
+//    }
+
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
 }

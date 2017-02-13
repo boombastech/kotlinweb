@@ -19,7 +19,7 @@ class ControllerServlet @Inject constructor(private val routeFactory: RouteFacto
 
     override fun service(servletRequest: HttpServletRequest, servletResponse: HttpServletResponse) {
         val request = requestFactory.get(servletRequest)
-        val response: Response
+        var response: Response
 
         try {
             val requestHandler = routeFactory.find(request)
