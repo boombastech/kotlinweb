@@ -19,18 +19,19 @@ class ControllerServlet @Inject constructor(private val routeFactory: RouteFacto
 
     override fun service(servletRequest: HttpServletRequest, servletResponse: HttpServletResponse) {
         val request = requestFactory.get(servletRequest)
+        val filters = globalFilters.getFilters()
         var response: Response
 
         try {
             val requestHandler = routeFactory.find(request)
 
-            globalFilters.getFilters().filterIsInstance(PreControllerFilter::class.java).forEach { filter -> filter.preControllerFilter(request) }
+            filters.filterIsInstance(PreControllerFilter::class.java).forEach { filter -> filter.preControllerFilter(request) }
             requestHandler.filters.filterIsInstance(PreControllerFilter::class.java).forEach { filter -> filter.preControllerFilter(request) }
 
             response = requestHandler.controller.execute(request)
 
-            globalFilters.getFilters().filterIsInstance(PostControllerFilter::class.java).forEach { filter -> filter.postControllerFilter(request) }
-            requestHandler.filters.filterIsInstance(PostControllerFilter::class.java).forEach { filter -> filter.postControllerFilter(request) }
+            filters.filterIsInstance(PostControllerFilter::class.java).forEach { filter -> filter.postControllerFilter(request, response) }
+            requestHandler.filters.filterIsInstance(PostControllerFilter::class.java).forEach { filter -> filter.postControllerFilter(request, response) }
 
             request.cookies.updated().forEach({ cookie ->
                 servletResponse.addCookie(cookie.toServletCookie())
@@ -44,10 +45,15 @@ class ControllerServlet @Inject constructor(private val routeFactory: RouteFacto
             }
         }
 
+        servletResponse.status = response.httpStatus.code
+        response.headers.forEach { entry ->
+            servletResponse.addHeader(entry.key, entry.value)
+        }
+
         when (response) {
             is DataResponse -> servletResponse.writer.print(response.data)
         }
 
-        globalFilters.getFilters().filterIsInstance(PostResponseFilter::class.java).forEach { filter -> filter.postResponseFilter(request) }
+        filters.filterIsInstance(PostResponseFilter::class.java).forEach { filter -> filter.postResponseFilter(request, response) }
     }
 }

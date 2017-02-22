@@ -23,8 +23,10 @@ abstract class WebModule() : ServletModule() {
     }
 
     abstract fun getRoutes(): Routes
+
     open fun globalFilters(): GlobalFilters {
         return GlobalFilters()
     }
+
     abstract fun wiring()
 }

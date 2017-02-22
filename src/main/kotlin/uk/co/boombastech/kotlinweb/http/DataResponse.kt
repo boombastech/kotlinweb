@@ -1,3 +1,5 @@
 package uk.co.boombastech.kotlinweb.http
 
-class DataResponse(val data: Any) : Response
+import uk.co.boombastech.kotlinweb.http.HttpStatus.ok
+
+class DataResponse(val data: Any, httpStatus: HttpStatus = ok) : Response(httpStatus)
