@@ -46,6 +46,7 @@ class ControllerServlet @Inject constructor(private val routeFactory: RouteFacto
         }
 
         servletResponse.status = response.httpStatus.code
+
         response.headers.forEach { entry ->
             servletResponse.addHeader(entry.key, entry.value)
         }
