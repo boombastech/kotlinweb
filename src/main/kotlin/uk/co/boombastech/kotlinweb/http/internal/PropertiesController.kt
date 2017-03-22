@@ -14,11 +14,14 @@ class PropertiesController @Inject constructor(val properties: Properties) : Con
     override fun execute(request: Request): Response {
         return DataResponse(this.properties.javaClass.kotlin.declaredMemberProperties.map { memberProperty ->
             val name = memberProperty.name
-            val value = memberProperty.get(this.properties)
+            val rawValue = memberProperty.get(this.properties)
             val editable = memberProperty is KMutableProperty<*>
 
-            PropertyView(name, value, editable)
+            if (rawValue is Collection<*>) {
+                PropertyView(name, rawValue.map(Any?::toString), editable)
+            } else {
+                PropertyView(name, rawValue.toString(), editable)
+            }
         })
     }
 }
-

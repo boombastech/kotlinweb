@@ -5,6 +5,8 @@ import uk.co.boombastech.kotlinweb.http.requests.RequestFactory
 import uk.co.boombastech.kotlinweb.http.routing.RouteFactory
 import uk.co.boombastech.kotlinweb.http.routing.Routes
 import uk.co.boombastech.kotlinweb.http.servlets.ControllerServlet
+import uk.co.boombastech.kotlinweb.http.servlets.MarshallerFactory
+import uk.co.boombastech.kotlinweb.http.servlets.MarshallerFactoryProvider
 
 abstract class WebModule() : ServletModule() {
     override fun configureServlets() {
@@ -18,6 +20,7 @@ abstract class WebModule() : ServletModule() {
         bind(GlobalFilters::class.java).toInstance(globalFilters())
         bind(RouteFactory::class.java)
         bind(GlobalFiltersFactory::class.java)
+        bind(MarshallerFactory::class.java).toProvider(MarshallerFactoryProvider::class.java)
 
         serve("*").with(ControllerServlet::class.java)
     }
