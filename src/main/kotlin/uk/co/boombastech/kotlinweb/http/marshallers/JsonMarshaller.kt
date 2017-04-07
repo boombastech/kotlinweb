@@ -1,4 +1,4 @@
-package uk.co.boombastech.kotlinweb.http.servlets
+package uk.co.boombastech.kotlinweb.http.marshallers
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder

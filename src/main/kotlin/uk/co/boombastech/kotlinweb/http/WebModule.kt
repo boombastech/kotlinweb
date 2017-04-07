@@ -1,14 +1,14 @@
 package uk.co.boombastech.kotlinweb.http
 
 import com.google.inject.servlet.ServletModule
+import uk.co.boombastech.kotlinweb.http.marshallers.MarshallerFactory
+import uk.co.boombastech.kotlinweb.http.marshallers.MarshallerFactoryProvider
 import uk.co.boombastech.kotlinweb.http.requests.RequestFactory
 import uk.co.boombastech.kotlinweb.http.routing.RouteFactory
 import uk.co.boombastech.kotlinweb.http.routing.Routes
 import uk.co.boombastech.kotlinweb.http.servlets.ControllerServlet
-import uk.co.boombastech.kotlinweb.http.servlets.MarshallerFactory
-import uk.co.boombastech.kotlinweb.http.servlets.MarshallerFactoryProvider
 
-abstract class WebModule() : ServletModule() {
+abstract class WebModule : ServletModule() {
     override fun configureServlets() {
         wiring()
         bindRoutes()

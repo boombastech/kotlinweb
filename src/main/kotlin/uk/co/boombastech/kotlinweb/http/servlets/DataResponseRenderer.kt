@@ -1,6 +1,7 @@
 package uk.co.boombastech.kotlinweb.http.servlets
 
 import uk.co.boombastech.kotlinweb.http.DataResponse
+import uk.co.boombastech.kotlinweb.http.marshallers.MarshallerFactory
 import uk.co.boombastech.kotlinweb.http.requests.Request
 import uk.co.boombastech.kotlinweb.http.requests.ResponseRender
 import javax.inject.Inject

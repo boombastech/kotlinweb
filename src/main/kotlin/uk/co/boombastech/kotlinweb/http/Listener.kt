@@ -8,6 +8,15 @@ import uk.co.boombastech.kotlinweb.http.config.Properties
 class Listener(private val config: Properties) : GuiceServletContextListener() {
 
     override fun getInjector(): Injector {
-        return Guice.createInjector(config.modules.map { it.java.getConstructor().newInstance() })
+        val modules = config.modules.map { it.java.getConstructor().newInstance() }
+        modules.forEach { module ->
+            if (module is WebModule) {
+                module.getRoutes()
+            }
+        }
+
+
+
+        return Guice.createInjector(modules)
     }
 }

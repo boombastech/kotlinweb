@@ -1,4 +1,4 @@
-package uk.co.boombastech.kotlinweb.http.servlets
+package uk.co.boombastech.kotlinweb.http.marshallers
 
 import javax.inject.Inject
 
@@ -14,5 +14,3 @@ class MarshallerFactory @Inject constructor(val marshallers: List<Marshaller>, v
         }
     }
 }
-
-data class MarshallerType(val marshaller: Marshaller, val contentType: String)
