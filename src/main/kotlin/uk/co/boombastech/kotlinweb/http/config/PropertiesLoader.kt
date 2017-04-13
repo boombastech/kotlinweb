@@ -7,9 +7,10 @@ fun createProperties(): Properties {
         return Properties()
     } else {
         val clazz = Class.forName(propertyClassName)
+        val properties = clazz.getConstructor().newInstance()
 
-        if (clazz is Properties) {
-            return clazz
+        if (properties is Properties) {
+            return properties
         } else {
             return Properties()
         }

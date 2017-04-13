@@ -9,12 +9,15 @@ import uk.co.boombastech.kotlinweb.http.routing.Routes
 class InternalModule : WebModule() {
     override fun getRoutes(): Routes {
         return Routes(
-                Route(path = "/internal/status", controller = PropertiesController::class, method = GET),
-                Route(path = "/internal/status", controller = PropertyEditorController::class, method = POST)
+                Route(path = "/internal/status",
+                        controller = PropertiesController::class,
+                        method = GET),
+                Route(path = "/internal/status",
+                        controller = PropertyEditorController::class,
+                        method = POST),
+                Route(path = "/internal/routes",
+                        controller = RoutesViewController::class,
+                        method = GET)
         )
-    }
-
-    override fun wiring() {
-
     }
 }

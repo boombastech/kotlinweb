@@ -1,14 +1,16 @@
 package uk.co.boombastech.kotlinweb.http.routing
 
 import uk.co.boombastech.kotlinweb.http.controllers.BadRequestController
-import uk.co.boombastech.kotlinweb.http.controllers.Controller
-import uk.co.boombastech.kotlinweb.http.filters.Filter
 import uk.co.boombastech.kotlinweb.http.requests.Request
 import java.util.*
-import kotlin.reflect.KClass
+import javax.inject.Inject
 
-class Routes(vararg route: Route) {
-    private val routes: List<Route> = route.toList()
+class Routes(val routes: List<Route>) {
+
+    @Inject
+    constructor() : this(listOf())
+
+    constructor(vararg route: Route) : this(route.toList())
 
     fun find(request: Request): Route {
         try {
